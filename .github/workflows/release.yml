@@ -1,4 +1,4 @@
-name: Release Build
+name: Release
 
 on:
   push:
@@ -25,16 +25,6 @@ jobs:
         run: |
           version=$(jq -r .version version.json)
           echo "VERSION=$version" >> "$GITHUB_OUTPUT"
-
-      - name: Build binary
-        run: |
-          go build -o myapp main.go
-
-      - name: Upload release artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ steps.version.outputs.VERSION }}
-          path: myapp
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
