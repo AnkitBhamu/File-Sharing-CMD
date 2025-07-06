@@ -31,6 +31,5 @@ jobs:
         with:
           tag_name: v${{ steps.version.outputs.VERSION }}
           name: Release v${{ steps.version.outputs.VERSION }}
-          files: myapp
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
