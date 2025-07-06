@@ -28,7 +28,7 @@ jobs:
 
       - name: Build binary
         run: |
-          go build -o myapp main.go  # adjust for your project structure
+          go build -o myapp main.go
 
       - name: Upload release artifact
         uses: actions/upload-artifact@v4
