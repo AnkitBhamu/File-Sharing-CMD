@@ -1,0 +1,46 @@
+name: Release Build
+
+on:
+  push:
+    paths:
+      - "version.json"
+    branches:
+      - main
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: "1.21" # change if you're using a different language
+
+      - name: Read version
+        id: version
+        run: |
+          version=$(jq -r .version version.json)
+          echo "VERSION=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build binary
+        run: |
+          go build -o myapp main.go  # adjust for your project structure
+
+      - name: Upload release artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ steps.version.outputs.VERSION }}
+          path: myapp
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ steps.version.outputs.VERSION }}
+          name: Release v${{ steps.version.outputs.VERSION }}
+          files: myapp
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
