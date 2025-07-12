@@ -2,8 +2,6 @@ package flags
 
 import (
 	"flag"
-
-	"github.com/File-share/constants"
 )
 
 var mode *string
