@@ -12,8 +12,7 @@ import (
 )
 
 func main() {
-
-	if os.Args[1] == constants.Help {
+	if len(os.Args) > 0 &&  os.Args[1] == constants.Help {
 		fmt.Print(constants.HelpString)
 		return
 	}
