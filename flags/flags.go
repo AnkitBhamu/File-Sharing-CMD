@@ -13,7 +13,7 @@ var port *string
 var downloaddir *string
 
 func Init() {
-	mode = flag.String("mode", constants.Sender, "flag to set the mode")
+	mode = flag.String("mode","", "flag to set the mode")
 	receiverIp = flag.String("rcvIp", "", "flag to set receiver ip")
 	filestosentdir = flag.String("sfdr", "", "flag to set filestosentdir")
 	port = flag.String("port", "8080", "flag to set the mode")
