@@ -1,5 +1,4 @@
 receiver:
-  downloadDir: C:\Users\ankit\Desktop\File-Sharing-CMD\sentdata\
   tcpreadbuffersize: 1638400
 
 sender:

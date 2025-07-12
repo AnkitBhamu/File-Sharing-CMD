@@ -4,79 +4,66 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"log"
 	"net"
 	"os"
+	"strings"
+	"sync"
+	"time"
 
 	"github.com/File-share/config"
+	"github.com/File-share/flags"
 	"github.com/File-share/models"
 )
 
 func ConnectToServer() {
-	log.Println("Please provide address the server!")
-	var ipadrr string
-	_, err := fmt.Scanf("%s\n", &ipadrr)
+	ipaddr := flags.ReceiverIP()
+	serversocket, err := net.Dial("tcp", ipaddr)
 
 	if err != nil {
-		log.Println("Error in getting port and ip of the server!", err)
+		fmt.Println("Error in connecting to server", err)
 		return
 	}
 
-	serversocket, err := net.Dial("tcp", ipadrr)
-
-	if err != nil {
-		log.Println("Error in connecting to server", err)
-		return
-	}
-
-	log.Println("Successfully connected to server!!")
-
+	fmt.Println("Successfully connected to receiver...")
 	SendFiles(serversocket)
 
 }
 
 func GetFilePaths() []string {
-	filepaths := make([]string, 0)
-	var filepath string
 
-	for {
-		_, err := fmt.Scanf("%s", &filepath)
+	filetosentdir := flags.FilestosentDir()
+	filedata, err := os.ReadFile(filetosentdir)
 
-		// this error will come at the next line
-		if err != nil {
-			log.Println("Error in reading filepath!!", err)
-			break
-		}
-
-		filepaths = append(filepaths, filepath)
-
+	if err != nil {
+		fmt.Println("error in reading the content of filestosent file", err)
+		return nil
 	}
+	// fmt.Println("Filecontent is : ", string(filedata))
+	filedatastring := strings.ReplaceAll(string(filedata), "\r\n", "\n")
+	filepaths := strings.Split(string(filedatastring), "\n")
 
 	return filepaths
 }
 
 func SendFiles(socket net.Conn) {
-	log.Println("Give file paths separated by space line need to send to server(reciever)")
+	fmt.Println("Reading filestosent file....")
+	filepaths := GetFilePaths()
 
-	for {
-		filepaths := GetFilePaths()
-		log.Println("Files selected are : ", filepaths)
-
-		for _, filename := range filepaths {
-			SendFile(filename, socket)
+	for _, filename := range filepaths {
+		if filename == "\n" {
+			continue
 		}
+		SendFile(filename, socket)
 	}
 
 }
 
 func SendFile(filename string, socket net.Conn) {
-	log.Println("Sending the file : ", filename)
-
 	//first read the file
 	file, err := os.Open(filename)
 
 	if err != nil {
-		log.Println("Error in opening the file!", err)
+		fmt.Println("Error in opening the file!", filename, err)
 		return
 	}
 
@@ -84,7 +71,7 @@ func SendFile(filename string, socket net.Conn) {
 	fileinfo, err := file.Stat()
 
 	if err != nil {
-		log.Println("Error in getting the fileinfo!!")
+		fmt.Println("Error in getting the fileinfo!!")
 		return
 	}
 
@@ -97,7 +84,7 @@ func SendFile(filename string, socket net.Conn) {
 	marshalled_data, err := json.Marshal(metadata)
 
 	if err != nil {
-		log.Println("Error in marshalling the metadata for the file")
+		fmt.Println("Error in marshalling the metadata for the file")
 		return
 	}
 
@@ -108,22 +95,30 @@ func SendFile(filename string, socket net.Conn) {
 	byteswritten, err := socket.Write(marshalled_data)
 
 	if err != nil || byteswritten != len(marshalled_data) {
-		log.Println("Error in sending the metadata to client!")
+		// fmt.Println("Error in sending the metadata to client!")
+		fmt.Printf("\rSending file :%s(failed!) \n", metadata.Filename)
 		return
 	}
 
 	// now start sending the content
 	// read the file in chunks
-	progress := 0.0
-	totaldatasent := 0
+	var totaldatasent int64
+	totaldatasent = 0
 	filebuffer := make([]byte, config.GetConfig().Sender.FileReadChunksize)
-	fmt.Printf("\rSending file : %s : %0.3f%%", fileinfo.Name(), progress)
+
+	// wait till the  speedmeter ends
+	var wg sync.WaitGroup
+	// wait for one thread to work
+	wg.Add(1)
+
+	// just to track the progress
+	go SpeedProgressMeter(&wg, &totaldatasent, fileinfo.Size(), fileinfo.Name())
 
 	for {
 		bytesread, err := file.Read(filebuffer)
-
 		if err != nil && err != io.EOF {
-			log.Println("Error in reading the file!!")
+			// fmt.Println("Error in reading the file!!")
+			totaldatasent = -1
 			return
 		}
 
@@ -135,14 +130,43 @@ func SendFile(filename string, socket net.Conn) {
 		bytessent, err := socket.Write(filebuffer[:bytesread])
 
 		if (bytessent != bytesread) || err != nil {
-			log.Println("Error in sending this chunk to server", err)
-			return
+			// fmt.Println("Error in sending this chunk to server", err)
+			totaldatasent = -1
 		}
-		totaldatasent += bytessent
-		progress = (float64(totaldatasent) / float64(fileinfo.Size())) * 100.0
-		fmt.Printf("\rSending file : %s : %0.3f%%", fileinfo.Name(), progress)
+		totaldatasent += int64(bytessent)
 
 	}
-	fmt.Println("\nFile : ", fileinfo.Name(), "sent successfully!")
 
+	wg.Wait()
+
+}
+
+func SpeedProgressMeter(wg *sync.WaitGroup, totaldatasent *int64, totalbytesneedtosend int64, filename string) {
+	// iterate every 1 second till all databeing sent
+	var totalsent int64
+	totalsent = 0
+	for {
+		time.Sleep(1 * time.Second)
+
+		//means send failed
+		if *totaldatasent == -1 {
+			fmt.Printf("\033[2K\rSending file :%s(failed!) \n", filename)
+			wg.Done()
+			return
+		}
+
+		speed_divider := 1024 * 1024
+		speed := float64(*totaldatasent-totalsent) / float64(speed_divider)
+		totalsent = *totaldatasent
+		progress := (float64(*totaldatasent) / float64(totalbytesneedtosend)) * 100.0
+
+		if *totaldatasent >= totalbytesneedtosend {
+			fmt.Printf("\033[2K\rSending file:%s(done)\n ", filename)
+			wg.Done()
+			return
+		}
+
+		fmt.Printf("\033[2K\rSending file:%s(%0.3f%%) speed: %0.3f MB/s ", filename, progress, speed)
+
+	}
 }
