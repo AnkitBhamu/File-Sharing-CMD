@@ -10,7 +10,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/File-share/config"
+	"github.com/File-share/constants"
 	"github.com/File-share/flags"
 	"github.com/File-share/models"
 )
@@ -104,7 +104,7 @@ func SendFile(filename string, socket net.Conn) {
 	// read the file in chunks
 	var totaldatasent int64
 	totaldatasent = 0
-	filebuffer := make([]byte, config.GetConfig().Sender.FileReadChunksize)
+	filebuffer := make([]byte, constants.FileReadChunksize)
 
 	// wait till the  speedmeter ends
 	var wg sync.WaitGroup

@@ -1,8 +1,11 @@
 package constants
 
 const (
-	Sender     = "sender"
-	Receiver   = "receiver"
+	Sender            = "sender"
+	Receiver          = "receiver"
+	FileReadChunksize = 1048576
+	Tcpreadbuffersize = 1638400
+
 	ConfigFile = "./config.yml"
 	Help       = "-help"
 	HelpString = `Usage: fsgoclient -mode=<sender|receiver> [options]

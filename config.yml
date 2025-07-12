@@ -1,5 +1,0 @@
-receiver:
-  tcpreadbuffersize: 1638400
-
-sender:
-  filereadchunksize: 1048576

@@ -8,7 +8,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/File-share/config"
+	"github.com/File-share/constants"
 	"github.com/File-share/flags"
 	"github.com/File-share/models"
 )
@@ -41,7 +41,7 @@ func StartServer() {
 
 // so this will accept the connections from client
 func ReceiveFiles(socket net.Conn) {
-	readbuffer := make([]byte, config.GetConfig().Receiver.Tcpreadbuffersize)
+	readbuffer := make([]byte, constants.Tcpreadbuffersize)
 	var fileptr *os.File
 	var currentstate = readingmetadatastate
 	var metadata []byte
