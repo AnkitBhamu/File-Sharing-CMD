@@ -21,10 +21,10 @@ Receiver Options:
 
 Examples:
   Sender:
-    .\main.exe -mode=sender -rcvIp=localhost:8080 -sfdr="C:\path\to\filestosend.txt"
+    fsgoclient  -mode=sender -rcvIp=localhost:8080 -sfdr="C:\path\to\filestosend.txt"
 
   Receiver:
-    .\main.exe -port=8080  -mode=receiver -downloadDir="C:\path\to\downloadDir"
+    fsgoclient  -port=8080  -mode=receiver -downloadDir="C:\path\to\downloadDir"
 
 Notes:
   - Ensure both sender and receiver are on the same network or accessible via the given IP.
