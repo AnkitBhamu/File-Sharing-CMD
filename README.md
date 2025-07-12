@@ -2,6 +2,10 @@
 
 A command-line tool for sharing files between systems over the network using Go.
 
+## Installation
+```
+run ./install.sh
+```
 ## Usage
 
 ```
