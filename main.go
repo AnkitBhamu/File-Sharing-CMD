@@ -2,27 +2,26 @@ package main
 
 import (
 	"fmt"
-	"log"
 
 	"github.com/File-share/client"
 	"github.com/File-share/config"
+	"github.com/File-share/constants"
+	"github.com/File-share/flags"
 	"github.com/File-share/server"
 )
 
 func main() {
 	config.Init()
-	fmt.Println("Select the mode:\n1.Receiver\n2.Sender")
-	var mode int
-	fmt.Scanf("%d\n", &mode)
+	flags.Init()
+	var mode = flags.Mode()
 
-	if mode == 1 {
-		log.Println("We are receiver!!")
+	if mode == constants.Receiver {
 		server.StartServer()
 
+	} else if mode == constants.Sender {
+		client.ConnectToServer()
+	} else {
+		fmt.Println("Invalid mode selected please use sender or receiver")
 	}
 
-	if mode == 2 {
-		log.Println("We are sender!!")
-		client.ConnectToServer()
-	}
 }

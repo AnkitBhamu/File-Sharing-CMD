@@ -10,6 +10,5 @@ type SenderConfig struct {
 }
 
 type ReceiverConfig struct {
-	DownloadDirectory string `yaml:"downloadDir"`
-	Tcpreadbuffersize int64  `yaml:"tcpreadbuffersize"`
+	Tcpreadbuffersize int64 `yaml:"tcpreadbuffersize"`
 }
