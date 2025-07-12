@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/File-share/client"
 	"github.com/File-share/config"
@@ -11,16 +12,24 @@ import (
 )
 
 func main() {
+
+	if os.Args[1] == constants.Help {
+		fmt.Print(constants.HelpString)
+		return
+	}
+
 	config.Init()
 	flags.Init()
 	var mode = flags.Mode()
 
-	if mode == constants.Receiver {
+	switch mode {
+	case constants.Sender:
+		client.ConnectToServer()
+
+	case constants.Receiver:
 		server.StartServer()
 
-	} else if mode == constants.Sender {
-		client.ConnectToServer()
-	} else {
+	default:
 		fmt.Println("Invalid mode selected please use sender or receiver")
 	}
 
