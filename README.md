@@ -2,9 +2,16 @@
 
 A command-line tool for sharing files between systems over the network using Go.
 
-## Installation
+## OS Supported
 ```
-run  bash ./install.sh
+Linux (can be installed via install script)
+Mac
+Windows
+```
+
+## Installation(Linux)
+```
+run  sudo bash ./install.sh
 ```
 ## Usage
 
