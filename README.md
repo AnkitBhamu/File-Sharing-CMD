@@ -10,6 +10,20 @@ Mac
 Windows
 ```
 
+## Installation(Windows)
+```
+1. Install go v1.24.4
+2. run go build -o <executrable-name>.exe main.go
+3. Executable created, now run this using ./<executable-name>.exe -mode=<sender|receiver> [options]
+```
+
+## Installation(Mac)
+```
+1. Install go v1.24.4
+2. run go build -o <executrable-name> main.go
+3. Executable created, now run this using ./<executable-name> -mode=<sender|receiver> [options]
+```
+
 ## Installation(Linux)
 
 ```
