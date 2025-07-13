@@ -6,6 +6,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 	"sync"
 	"time"
 
@@ -32,14 +33,15 @@ func GetFilePathCMD() []string {
 	filepaths := make([]string, 0)
 	filepath := ""
 	fmt.Scan(&filepath)
-	filepaths = filepaths[1 : len(filepath)-1]
+	filepaths = append(filepaths, strings.ReplaceAll(filepath, "'", ""))
+	filepaths = append(filepaths, strings.ReplaceAll(filepath, `"`, ""))
 
 	return filepaths
 
 }
 
 func SendFiles(socket net.Conn) {
-	fmt.Println("Paste/Type the file paths between '' separated by space")
+	fmt.Println("Paste/Type the file paths between separated by space")
 	for {
 
 		filepaths := GetFilePathCMD()
