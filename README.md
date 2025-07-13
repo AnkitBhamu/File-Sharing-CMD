@@ -3,6 +3,7 @@
 A command-line tool for sharing files between systems over the network using Go.
 
 ## OS Supported
+
 ```
 Linux (can be installed via install script)
 Mac
@@ -10,9 +11,11 @@ Windows
 ```
 
 ## Installation(Linux)
+
 ```
 run  sudo bash ./install.sh
 ```
+
 ## Usage
 
 ```
@@ -34,9 +37,6 @@ fsgoclient -mode=<sender|receiver> [options]
 - `-rcvIp=<ip:port>`  
   IP address and port of the receiver (e.g., `localhost:8080`).
 
-- `-sfdr=<path>`  
-  Path to a file containing paths of files to be sent (one file path per line).
-
 ### Receiver Mode
 
 - `-downloadDir=<path>`  
@@ -50,7 +50,7 @@ fsgoclient -mode=<sender|receiver> [options]
 **Sender:**
 
 ```
-fsgoclient -mode=sender -rcvIp=localhost:8080 -sfdr="C:\path\to\filestosend.txt"
+fsgoclient -mode=sender -rcvIp=localhost:8080"
 ```
 
 **Receiver:**

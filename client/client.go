@@ -6,7 +6,6 @@ import (
 	"io"
 	"net"
 	"os"
-	"strings"
 	"sync"
 	"time"
 
@@ -29,31 +28,27 @@ func ConnectToServer() {
 
 }
 
-func GetFilePaths() []string {
-
-	filetosentdir := flags.FilestosentDir()
-	filedata, err := os.ReadFile(filetosentdir)
-
-	if err != nil {
-		fmt.Println("error in reading the content of filestosent file", err)
-		return nil
-	}
-	// fmt.Println("Filecontent is : ", string(filedata))
-	filedatastring := strings.ReplaceAll(string(filedata), "\r\n", "\n")
-	filepaths := strings.Split(string(filedatastring), "\n")
+func GetFilePathCMD() []string {
+	filepaths := make([]string, 0)
+	filepath := ""
+	fmt.Scan(&filepath)
+	filepaths = filepaths[1 : len(filepath)-1]
 
 	return filepaths
+
 }
 
 func SendFiles(socket net.Conn) {
-	fmt.Println("Reading filestosent file....")
-	filepaths := GetFilePaths()
+	fmt.Println("Paste/Type the file paths between '' separated by space")
+	for {
 
-	for _, filename := range filepaths {
-		if filename == "\n" {
-			continue
+		filepaths := GetFilePathCMD()
+		for _, filename := range filepaths {
+			if filename == "\n" {
+				continue
+			}
+			SendFile(filename, socket)
 		}
-		SendFile(filename, socket)
 	}
 
 }

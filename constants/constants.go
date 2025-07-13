@@ -16,7 +16,6 @@ Modes:
 
 Sender Options:
   -rcvIp=<ip:port>       IP address and port of the receiver (e.g., localhost:8080)
-  -sfdr=<path>           Path to a file containing files path that needs to send (one path per line)
 
 Receiver Options:
   -downloadDir=<path>    Directory where received files will be saved
@@ -24,7 +23,7 @@ Receiver Options:
 
 Examples:
   Sender:
-    fsgoclient  -mode=sender -rcvIp=localhost:8080 -sfdr="C:\path\to\filestosend.txt"
+    fsgoclient  -mode=sender -rcvIp=localhost:8080"
 
   Receiver:
     fsgoclient  -port=8080  -mode=receiver -downloadDir="C:\path\to\downloadDir"
