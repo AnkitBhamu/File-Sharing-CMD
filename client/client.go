@@ -33,8 +33,11 @@ func GetFilePathCMD() []string {
 	filepaths := make([]string, 0)
 	filepath := ""
 	fmt.Scan(&filepath)
-	filepaths = append(filepaths, strings.ReplaceAll(filepath, "'", ""))
-	filepaths = append(filepaths, strings.ReplaceAll(filepath, `"`, ""))
+
+	// replace all starting '' , ""
+	filepath = strings.ReplaceAll(filepath, "'", "")
+	filepath = strings.ReplaceAll(filepath, `"`, "")
+	filepaths = append(filepaths, filepath)
 
 	return filepaths
 
