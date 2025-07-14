@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	if len(os.Args) > 2 && os.Args[1] == constants.Help {
+	if len(os.Args) >= 2 && os.Args[1] == constants.Help {
 		fmt.Print(constants.HelpString)
 		return
 	}
