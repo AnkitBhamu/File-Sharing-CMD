@@ -1,6 +1,7 @@
 package client
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -32,11 +33,13 @@ func ConnectToServer() {
 func GetFilePathCMD() []string {
 	filepaths := make([]string, 0)
 	filepath := ""
-	fmt.Scan(&filepath)
+	reader := bufio.NewReader(os.Stdin)
+	filepath, _ = reader.ReadString('\n')
 
-	// replace all starting '' , ""
 	filepath = strings.ReplaceAll(filepath, "'", "")
+	filepath = strings.ReplaceAll(filepath, "\n", "")
 	filepath = strings.ReplaceAll(filepath, `"`, "")
+	filepath = strings.TrimSpace(filepath)
 	filepaths = append(filepaths, filepath)
 
 	return filepaths
@@ -44,7 +47,7 @@ func GetFilePathCMD() []string {
 }
 
 func SendFiles(socket net.Conn) {
-	fmt.Println("Paste/Type the file paths between separated by space")
+	fmt.Println("Paste/Type the file path then type enter")
 	for {
 
 		filepaths := GetFilePathCMD()
