@@ -73,6 +73,9 @@ fsgoclient -mode=sender -rcvIp=localhost:8080"
 fsgoclient -mode=receiver -port=8080 -downloadDir="C:\path\to\downloadDir"
 ```
 
+### Demo
+[Watch Demo Video](https://drive.google.com/file/d/1qmIK8tR7PfF5soCGReVei0Ro6DDJ94s0/view?usp=sharing)
+
 ## Notes
 
 - Ensure both sender and receiver are on the same network or accessible via the given IP.
